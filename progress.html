@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bilim Type — Live Progress Board</title>
+  <style>
+    body{font-family:Arial,sans-serif;background:#0f172a;color:#e2e8f0;margin:0;padding:20px}
+    .wrap{max-width:1200px;margin:0 auto}
+    .lane{position:relative;height:64px;background:#1e293b;border-radius:10px;margin:10px 0;overflow:hidden;border:1px solid #334155}
+    .name{position:absolute;left:12px;top:8px;font-weight:700;font-size:14px;z-index:2;background:rgba(2,6,23,.7);padding:2px 6px;border-radius:6px}
+    .horse{position:absolute;left:0;bottom:0;height:44px;transition:left .5s ease}
+    .progress{position:absolute;right:12px;top:8px;font-weight:700}
+    .finish{position:absolute;right:10px;top:0;bottom:0;border-left:3px dashed #ef4444}
+    .hint{color:#94a3b8;margin-bottom:14px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>3A сыныбы — Live Progress Board</h1>
+    <p class="hint">Firebase қосылғанда бұл бет realtime түрде оқушылар орнын ауыстырып көрсетеді.</p>
+    <div id="board"></div>
+  </div>
+
+<script>
+// Firebase-ға жалғағанда: classId бойынша progressSessions коллекциясын realtime тыңдаңыз.
+// Қазіргі демо режимі:
+let racers = [
+  {name:'Аян Сәрсен', progress:68},
+  {name:'Мадина Асқар', progress:74},
+  {name:'Нұрай Әлім', progress:52},
+  {name:'Әмір Бек', progress:80}
+];
+
+function render(){
+  racers.sort((a,b)=>b.progress-a.progress);
+  const board = document.getElementById('board');
+  board.innerHTML = racers.map(r => `
+    <div class="lane">
+      <div class="name">${r.name}</div>
+      <img src="horse.gif" class="horse" style="left:${Math.min(r.progress,92)}%" alt="horse">
+      <div class="progress">${r.progress}%</div>
+      <div class="finish"></div>
+    </div>
+  `).join('');
+}
+
+setInterval(()=>{
+  racers = racers.map(r=>({ ...r, progress: Math.min(100, r.progress + Math.round(Math.random()*4)) }));
+  render();
+}, 1500);
+
+render();
+</script>
+</body>
+</html>
