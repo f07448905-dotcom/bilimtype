@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bilim Type - Тайбурыл жарысы</title>
+    
+    <link rel="icon" type="image/png" href="favicon.png">
+    
+    <style>
+        /* --- CSS СТИЛЬДЕР --- */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f9;
+            color: #333;
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .main-container {
+            width: 80%;
+            max-width: 1000px;
+            margin: 30px auto;
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .hidden { display: none !important; }
+
+        /* HEADER */
+        .school-header {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 20px;
+        }
+        
+        /* 2. WEB ЛОГОТИП */
+        .header-logo {
+            width: 500px;
+            height: auto;
+            margin-bottom: 10px;
+        }
+
+        .school-name { font-size: 24px; font-weight: 800; color: #2c3e50; margin: 10px 0; text-transform: uppercase; }
+        .subject-name { font-size: 18px; color: #34495e; font-weight: 600; margin: 5px 0; }
+        .slogan { font-style: italic; color: #e67e22; font-weight: bold; }
+
+        /* РЕЖИМ ТАҢДАУ БАТЫРМАЛАРЫ (TABS) */
+        .mode-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .mode-btn {
+            padding: 12px 25px;
+            border: 2px solid #ddd;
+            background: #f8f9fa;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            transition: 0.3s;
+        }
+        .mode-btn.active {
+            background: #3498db;
+            color: white;
+            border-color: #3498db;
+            box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+        }
+
+        /* КІРУ БӨЛІМІ */
+        .login-form input, .login-form select {
+            width: 100%; padding: 15px; margin: 10px 0;
+            border: 2px solid #eee; border-radius: 10px; font-size: 16px; box-sizing: border-box;
+        }
+
+        /* АТ ЖАРЫСЫ */
+        .race-track {
+            position: relative; width: 100%; height: 90px;
+            border-bottom: 5px solid #795548; margin-bottom: 20px;
+            background: linear-gradient(to bottom, #e3f2fd, #ffffff);
+            border-radius: 10px 10px 0 0; overflow: hidden;
+        }
+        .horse {
+            position: absolute; bottom: 0; left: 0; height: 70px;
+            transition: left 0.3s ease-out; z-index: 10;
+        }
+        .finish-line {
+            position: absolute; right: 20px; bottom: 0; height: 100%;
+            border-left: 5px dashed #c0392b; z-index: 5;
+        }
+        .motivation-label {
+            position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
+            font-weight: bold; color: #d35400; background: rgba(255,255,255,0.9);
+            padding: 5px 15px; border-radius: 15px;
+        }
+
+        /* СТАТИСТИКА ЖӘНЕ БАСҚАРУ */
+        .top-controls {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 15px;
+        }
+        .back-btn {
+            background: #95a5a6; color: white; border: none;
+            padding: 8px 15px; border-radius: 8px; cursor: pointer; font-weight: bold;
+        }
+        .back-btn:hover { background: #7f8c8d; }
+
+        .stats-bar {
+            display: flex; gap: 20px; font-weight: bold; font-size: 18px;
+            background: #f8f9fa; padding: 10px 20px; border-radius: 10px;
+        }
+
+        /* ТЕРУ АЙМАҒЫ */
+        #text-display {
+            font-size: 26px; font-family: 'Courier New', Courier, monospace;
+            line-height: 1.6; height: 180px; overflow: hidden;
+            background: #ffffff; border: 2px solid #3498db;
+            border-radius: 12px; padding: 25px; white-space: pre-wrap;
+            position: relative; cursor: text; color: #aaa;
+        }
+        
+        .cursor { border-left: 3px solid #3498db; animation: blink 1s infinite; }
+        @keyframes blink { 50% { border-color: transparent; } }
+        
+        .correct { color: #27ae60; font-weight: bold; }
+        .incorrect { color: #c0392b; background-color: #fadbd8; text-decoration: underline; }
+
+        /* ОҚУ РЕЖИМІНІҢ СТИЛЬДЕРІ */
+        #reading-text-area {
+            font-size: 22px; line-height: 1.8; text-align: justify;
+            background: #fff3e0; padding: 20px; border-radius: 10px;
+            border: 2px solid #ffe0b2; margin-bottom: 20px;
+        }
+        .mic-container { text-align: center; margin-top: 20px; }
+        .mic-btn {
+            width: 80px; height: 80px; border-radius: 50%;
+            background: #e74c3c; border: none; color: white;
+            font-size: 30px; cursor: pointer;
+            box-shadow: 0 0 15px rgba(231, 76, 60, 0.4);
+            animation: pulse 1.5s infinite;
+        }
+        .mic-btn.listening { background: #27ae60; animation: none; }
+        @keyframes pulse { 0% {transform: scale(1);} 50% {transform: scale(1.1);} 100% {transform: scale(1);} }
+
+        /* ПЕРНЕТАҚТА ЖӘНЕ БАТЫРМАЛАР */
+        .keyboard-helper { width: 100%; margin-top: 30px; text-align: center; }
+        .keyboard-helper img { max-width: 100%; border-radius: 10px; border: 1px solid #ddd; }
+
+        button.action-btn {
+            width: 100%; padding: 18px; background: #3498db; color: white;
+            border: none; border-radius: 10px; font-size: 20px; cursor: pointer;
+            margin-top: 20px; font-weight: bold; transition: 0.2s;
+        }
+        button.action-btn:hover { background: #2980b9; }
+        button.finish-btn { background: #e74c3c; }
+        button.finish-btn:hover { background: #c0392b; }
+
+        /* МОДАЛДЫ ТЕРЕЗЕ */
+        .modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7); display: flex;
+            justify-content: center; align-items: center; z-index: 1000;
+        }
+        .modal-content {
+            background: white; padding: 40px; border-radius: 20px;
+            text-align: center; width: 400px;
+            animation: popIn 0.3s ease-out;
+        }
+        @keyframes popIn { from {transform: scale(0.5);} to {transform: scale(1);} }
+        
+        .score-circle {
+            width: 120px; height: 120px; background: #3498db; color: white;
+            border-radius: 50%; display: flex; justify-content: center; align-items: center;
+            font-size: 48px; font-weight: bold; margin: 20px auto;
+        }
+
+        #input-field { position: fixed; top: -100px; opacity: 0; }
+    </style>
+</head>
+<body>
+
+    <div class="main-container">
+        
+        <div class="school-header">
+            <img src="web_logo.png" alt="Bilim Type Logo" class="header-logo">
+            <p class="school-name">Әл-Фараби атындағы Binom school мектеп-лицейі</p>
+        </div>
+
+        <div id="login-section">
+            
+            <div class="mode-tabs">
+                <button class="mode-btn active" onclick="selectMode('typing')" id="btn-typing">⌨️ Теру</button>
+                <button class="mode-btn" onclick="selectMode('reading')" id="btn-reading">🎤 Оқу (AI)</button>
+            </div>
+
+            <div class="login-form">
+                <label>Оқушының аты-жөні:</label>
+                <input type="text" id="student-name" placeholder="Мысалы: Арман Әлиев" required>
+                
+                <div style="display:flex; gap:20px;">
+                    <div style="flex:1">
+                        <label>Сынып:</label>
+                        <select id="class-num">
+                            <option value="3">3-сынып</option>
+                            <option value="2">2-сынып</option>
+                            <option value="4">4-сынып</option>
+                        </select>
+                    </div>
+                    <div style="flex:1">
+                        <label>Литера:</label>
+                        <select id="class-letter"></select>
+                    </div>
+                </div>
+
+                <label>Мәтінді таңдаңыз:</label>
+                <select id="text-select"><option>Жүктелуде...</option></select>
+                
+                <button class="action-btn" onclick="startApp()" id="start-btn" disabled>Бастау 🚀</button>
+            </div>
+        </div>
+
+        <div id="typing-mode" class="hidden">
+            <div class="top-controls">
+                <button class="back-btn" onclick="goHome()">⬅ Басты бет</button>
+                <div class="stats-bar">
+                    <span style="color:#555">⏱️ <span id="typing-timer">00:00</span></span>
+                    <span style="color:#e74c3c">Қате: <span id="error-count">0</span></span>
+                    <span style="color:#3498db">Прогресс: <span id="progress-text">0%</span></span>
+                </div>
+            </div>
+
+            <div class="race-track">
+                <div class="motivation-label">Тайбурылға мәреге жетуге көмектес! 🐎</div>
+                <img src="horse.gif" class="horse" id="horse-img" alt="Horse">
+                <div class="finish-line"></div>
+            </div>
+
+            <div id="text-display" onclick="focusInput()"></div>
+            <input type="text" id="input-field" autocomplete="off">
+            <div class="keyboard-helper">
+                <p style="color:#888; margin-bottom:10px;">Қазақ әріптерінің орналасуы:</p>
+                <img src="keyboard.png" alt="Keyboard Helper">
+            </div>
+
+            <button class="action-btn finish-btn" onclick="finishTyping()">Жұмысты аяқтау 🏁</button>
+
+            
+        </div>
+
+        <div id="reading-mode" class="hidden">
+            <div class="top-controls">
+                <button class="back-btn" onclick="goHome()">⬅ Басты бет</button>
+                <div class="stats-bar">
+                    <span style="color:#e74c3c">⏱️ Уақыт: <span id="reading-timer">01:00</span></span>
+                </div>
+            </div>
+
+            <div style="text-align:center;">
+                <h3>Мәтінді дауыстап оқыңыз:</h3>
+                <div id="reading-text-area">
+                    </div>
+
+                <div class="mic-container">
+                    <p id="ai-status" style="color:gray; margin-bottom:10px;">Микрофонды басып, оқуды бастаңыз...</p>
+                    <button class="mic-btn" onclick="toggleReading()" id="mic-btn">🎙️</button>
+                </div>
+
+                <div id="reading-result" class="hidden" style="margin-top:20px; padding:20px; background:#e8f5e9; border-radius:10px;">
+                    <h3 style="color:#27ae60">Нәтиже:</h3>
+                    <p>Анықталған сөздер саны: <span id="word-count" style="font-size:32px; font-weight:bold; color:#2c3e50">0</span></p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="result-modal" class="modal hidden">
+        <div class="modal-content">
+            <h2 style="color:#2c3e50">Жарайсың!</h2>
+            <div class="score-circle">
+                <span id="final-score">0</span>
+            </div>
+            <div style="text-align:left; margin:20px 0; font-size:16px; line-height:1.6;">
+                <p>📊 Прогресс: <b id="res-progress">0%</b></p>
+                <p>🎯 Дәлдік: <b id="res-accuracy">0%</b></p>
+                <p>⏱️ Уақыт: <b id="res-time">00:00</b></p>
+            </div>
+            <p id="save-status" style="color:gray; font-size:14px;">Google Sheets-ке жіберілуде...</p>
+            <button class="action-btn" onclick="location.reload()">Қайта тапсыру</button>
+        </div>
+    </div>
+
+    <script>
+        // --- БАПТАУЛАР ---
+        const GOOGLE_SCRIPT_URL = "KEY"; 
+
+        let textContent = "";
+        let selectedTitle = "";
+        let currentIndex = 0;
+        let errors = 0;
+        let timerInterval;
+        let seconds = 0;
+        let isTyping = false;
+        
+        let currentMode = 'typing'; // 'typing' немесе 'reading'
+
+        // Оқу режимі айнымалылары
+        let recognition;
+        let isReading = false;
+        let spokenWords = 0;
+        let readingTime = 60;
+
+        window.onload = function() {
+            // Әріптерді толтыру
+            const letters = "АӘБВГҒДЕЖЗИКҚЛМНҢОПРСТУҰҮФХҺЦЧШЩЫІЭЮЯ".split("");
+            const sel = document.getElementById('class-letter');
+            letters.forEach(l => { let o = document.createElement('option'); o.text=l; sel.add(o); });
+
+            // Google Sheets-тен мәтіндерді алу
+            fetch(GOOGLE_SCRIPT_URL)
+                .then(r => r.json())
+                .then(data => {
+                    const sel = document.getElementById('text-select');
+                    sel.innerHTML = "";
+                    if(data.length === 0) {
+                        let o = document.createElement('option'); o.text = "Мәтін жоқ"; sel.add(o);
+                    } else {
+                        data.forEach(t => {
+                            let o = document.createElement('option');
+                            o.value = t.content; o.text = t.title; sel.add(o);
+                        });
+                        document.getElementById('start-btn').disabled = false;
+                    }
+                })
+                .catch(e => {
+                    console.error(e);
+                    document.getElementById('text-select').innerHTML = "<option>Қате! Интернетті тексеріңіз</option>";
+                });
+
+            // AI Дауыс тануды баптау
+            if ('webkitSpeechRecognition' in window) {
+                recognition = new webkitSpeechRecognition();
+                recognition.lang = 'kk-KZ';
+                recognition.continuous = true;
+                recognition.interimResults = true;
+                recognition.onresult = function(event) {
+                    let transcript = '';
+                    for (let i = event.resultIndex; i < event.results.length; ++i) {
+                        transcript += event.results[i][0].transcript;
+                    }
+                    spokenWords = transcript.trim().split(/\s+/).length;
+                    document.getElementById('ai-status').innerText = "Тыңдап тұрмын... (" + spokenWords + " сөз)";
+                };
+            } else {
+                alert("Ескерту: Бұл браузер дауыс тануды қолдамайды. Google Chrome қолданыңыз.");
+            }
+        };
+
+        // РЕЖИМДІ ТАҢДАУ
+        function selectMode(mode) {
+            currentMode = mode;
+            document.getElementById('btn-typing').classList.remove('active');
+            document.getElementById('btn-reading').classList.remove('active');
+            
+            document.getElementById('btn-' + mode).classList.add('active');
+        }
+
+        function startApp() {
+            const name = document.getElementById('student-name').value;
+            if(!name) { alert("Аты-жөніңізді жазыңыз!"); return; }
+
+            const sel = document.getElementById('text-select');
+            textContent = sel.value.replace(/\r\n/g, "\n");
+            selectedTitle = sel.options[sel.selectedIndex].text;
+
+            document.getElementById('login-section').classList.add('hidden');
+
+            if(currentMode === 'typing') {
+                startTypingMode();
+            } else {
+                startReadingMode();
+            }
+        }
+
+        // БАСТЫ БЕТКЕ ҚАЙТУ
+        function goHome() {
+            // Барлық таймерлерді тоқтату
+            clearInterval(timerInterval);
+            if(recognition) recognition.stop();
+            
+            // Беттерді жасыру
+            document.getElementById('typing-mode').classList.add('hidden');
+            document.getElementById('reading-mode').classList.add('hidden');
+            
+            // Басты бетті ашу
+            document.getElementById('login-section').classList.remove('hidden');
+            
+            // Айнымалыларды тазалау
+            isTyping = false;
+            isReading = false;
+        }
+
+        // --- 1. ТЕРУ РЕЖИМІ ---
+        function startTypingMode() {
+            document.getElementById('typing-mode').classList.remove('hidden');
+            renderText();
+            isTyping = true;
+            focusInput();
+            
+            seconds = 0;
+            document.getElementById('typing-timer').innerText = "00:00";
+            timerInterval = setInterval(() => {
+                seconds++;
+                let m = Math.floor(seconds/60), s = seconds%60;
+                document.getElementById('typing-timer').innerText = (m<10?"0"+m:m)+":"+(s<10?"0"+s:s);
+            }, 1000);
+        }
+
+        function renderText() {
+            const display = document.getElementById('text-display');
+            display.innerHTML = '';
+            textContent.split('').forEach(char => {
+                let s = document.createElement('span'); s.innerText = char; display.appendChild(s);
+            });
+            if(display.children.length > 0) display.children[0].classList.add('cursor');
+        }
+
+        document.getElementById('input-field').addEventListener('input', (e) => {
+            if(!isTyping) return;
+            let val = e.data; 
+            e.target.value = ''; 
+            if(!val) return;
+
+            const spans = document.getElementById('text-display').children;
+            if(currentIndex >= spans.length) return;
+
+            const targetChar = textContent[currentIndex];
+            const isMatch = (val === targetChar) || (targetChar === '\n' && e.inputType === 'insertLineBreak');
+
+            if(isMatch) {
+                spans[currentIndex].className = 'correct';
+            } else {
+                spans[currentIndex].className = 'incorrect';
+                errors++;
+                document.getElementById('error-count').innerText = errors;
+            }
+            
+            spans[currentIndex].classList.remove('cursor');
+            currentIndex++;
+            updateProgress();
+
+            if(currentIndex < spans.length) {
+                spans[currentIndex].classList.add('cursor');
+                if(spans[currentIndex].offsetTop > 60) {
+                    document.getElementById('text-display').scrollTop = spans[currentIndex].offsetTop - 60;
+                }
+            } else {
+                finishTyping();
+            }
+        });
+
+        document.getElementById('input-field').addEventListener('keydown', (e) => {
+             if(!isTyping) return;
+             if(e.key === 'Backspace' && currentIndex > 0) {
+                 const spans = document.getElementById('text-display').children;
+                 spans[currentIndex].classList.remove('cursor');
+                 currentIndex--;
+                 spans[currentIndex].className = '';
+                 spans[currentIndex].classList.add('cursor');
+                 updateProgress();
+             }
+        });
+
+        function updateProgress() {
+            let total = textContent.length;
+            let percent = (currentIndex / total) * 100;
+            document.getElementById('progress-text').innerText = Math.floor(percent) + "%";
+            document.getElementById('horse-img').style.left = Math.min(percent, 92) + "%";
+        }
+
+        function focusInput() { document.getElementById('input-field').focus(); }
+
+        function finishTyping() {
+            if(!isTyping) return;
+            isTyping = false;
+            clearInterval(timerInterval);
+
+            const totalChars = textContent.length;
+            const typedChars = currentIndex;
+            let progressRaw = (typedChars / totalChars); 
+            let progressPercent = Math.floor(progressRaw * 100);
+            
+            let accuracyPercent = 0;
+            if (typedChars > 0) {
+                accuracyPercent = Math.floor(((typedChars - errors) / typedChars) * 100);
+                if(accuracyPercent < 0) accuracyPercent = 0;
+            }
+
+            let rawScore = progressRaw * (accuracyPercent / 100) * 10;
+            let finalScore = Math.round(rawScore);
+            if(typedChars > 5 && finalScore === 0) finalScore = 1;
+
+            document.getElementById('result-modal').classList.remove('hidden');
+            document.getElementById('final-score').innerText = finalScore;
+            document.getElementById('res-progress').innerText = progressPercent + "%";
+            document.getElementById('res-accuracy').innerText = accuracyPercent + "%";
+            document.getElementById('res-time').innerText = document.getElementById('typing-timer').innerText;
+
+            sendData(finalScore, progressPercent, accuracyPercent);
+        }
+
+        // --- 2. ОҚУ РЕЖИМІ ---
+        function startReadingMode() {
+            document.getElementById('reading-mode').classList.remove('hidden');
+            document.getElementById('reading-text-area').innerText = textContent;
+            
+            readingTime = 60;
+            document.getElementById('reading-timer').innerText = "01:00";
+            document.getElementById('word-count').innerText = "0";
+            document.getElementById('reading-result').classList.add('hidden');
+            spokenWords = 0;
+        }
+
+        function toggleReading() {
+            if(!isReading) {
+                isReading = true;
+                document.getElementById('mic-btn').classList.add('listening');
+                document.getElementById('mic-btn').innerText = "⏹️";
+                if(recognition) recognition.start();
+                
+                timerInterval = setInterval(() => {
+                    readingTime--;
+                    document.getElementById('reading-timer').innerText = "00:" + (readingTime<10?"0"+readingTime:readingTime);
+                    if(readingTime <= 0) stopReading();
+                }, 1000);
+            } else {
+                stopReading();
+            }
+        }
+
+        function stopReading() {
+            isReading = false;
+            if(recognition) recognition.stop();
+            clearInterval(timerInterval);
+            document.getElementById('mic-btn').classList.remove('listening');
+            document.getElementById('mic-btn').innerText = "🎙️";
+            
+            document.getElementById('reading-result').classList.remove('hidden');
+            document.getElementById('word-count').innerText = spokenWords;
+            document.getElementById('ai-status').innerText = "Оқу аяқталды.";
+        }
+
+        function sendData(score, progress, accuracy) {
+            const data = {
+                name: document.getElementById('student-name').value,
+                synyp: document.getElementById('class-num').value + "-" + document.getElementById('class-letter').value,
+                textTitle: selectedTitle,
+                time: document.getElementById('typing-timer').innerText,
+                progress: progress + "%",
+                accuracy: accuracy + "%",
+                score: score
+            };
+
+            fetch(GOOGLE_SCRIPT_URL, {
+                method: "POST",
+                mode: "no-cors",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify(data)
+            })
+            .then(() => {
+                const status = document.getElementById('save-status');
+                status.innerText = "✅ Нәтиже журналға қойылды!";
+                status.style.color = "#27ae60";
+                status.style.fontWeight = "bold";
+            });
+        }
+    </script>
+</body>
+</html>
